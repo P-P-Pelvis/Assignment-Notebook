@@ -9,29 +9,38 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var assignmentList = AssignmentList()
+    @State private var showingAddItemView = false
     var body: some View {
         NavigationView {
             List {
-                ForEach(assignmentList.items) { item in
+                ForEach(assignmentList.homeWork) { list in
                     HStack {
-                        VStack(alignment: .leading, content: {
-                            Text(item.course).font(.headline)
-                            Text(item.description)
-                        })
+                        VStack(alignment: .leading) {
+                            Text(list.course).font(.headline)
+                            Text(list.description)
+                        }
                         Spacer()
-                        Text(item.dueDate, style: .date)
+                        Text(list.dueDate, style: .date)
                     }
-                    
                 }
                 .onMove(perform: { indices, newOffset in
-                    assignmentList.items.move(fromOffsets: indices, toOffset: newOffset)
+                    assignmentList.homeWork.move(fromOffsets: indices, toOffset: newOffset)
                 })
                 .onDelete(perform: { indexSet in
-                    assignmentList.items.remove(atOffsets: indexSet)
+                    assignmentList.homeWork.remove(atOffsets: indexSet)
                 })
             }
+            .sheet(isPresented: $showingAddItemView) {
+                AddAssignmentView()
+                    .environment(assignmentList)
+            }
             .navigationBarTitle("Assignment Notebook")
-            .navigationBarItems(leading: EditButton())
+            .navigationBarItems(leading: EditButton(),
+                                trailing: Button(action: {
+                showingAddItemView = true
+            }, label: {
+                Image(systemName: "plus")
+            }))
         }
     }
 }
@@ -39,7 +48,7 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-struct AssignmentItem : Identifiable {
+struct AssignmentItem : Identifiable, Codable {
     var id = UUID()
     var course = String()
     var description = String()

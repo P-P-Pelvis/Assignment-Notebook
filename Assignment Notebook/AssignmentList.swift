@@ -9,9 +9,20 @@ import Foundation
 
 @Observable
 class AssignmentList {
-    var items =
-    [AssignmentItem(course: "Algebra", description: "Linears Equations", dueDate: Date()),
-     AssignmentItem(course: "History", description: "Civill War Paper", dueDate: Date()),
-     AssignmentItem(course: "Science", description: "Atomic Bomb Lap", dueDate: Date())
-    ]
+    var homeWork: [AssignmentItem] {
+        didSet {
+            if let homeWorkData = try? JSONEncoder().encode(homeWork) {
+                UserDefaults.standard.set(homeWorkData, forKey: "homeWork")
+            }
+        }
+    }
+    init() {
+        if let data = UserDefaults.standard.data(forKey: "homeWork") {
+            if let homeWorkData = try? JSONDecoder().decode([AssignmentItem].self, from: data) {
+                homeWork = homeWorkData
+                return
+            }
+        }
+        homeWork = []
+    }
 }

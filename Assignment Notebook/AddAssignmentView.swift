@@ -9,8 +9,8 @@ import SwiftUI
 
 struct AddAssignmentView: View {
     @Environment(AssignmentList.self) var assignmentList
-    @Environment(\.presentationMode) var presentationMode
-    static let courses = ["Algebra", "History", "Science","English","Art"]
+    @Environment(\.dismiss) var fooFighters
+    static let courses = ["Algebra", "History", "CompSci","English","Art"]
     @State private var course = ""
     @State private var description = ""
     @State private var dueDate = Date()
@@ -22,8 +22,19 @@ struct AddAssignmentView: View {
                         Text(course)
                     }
                 }
+                TextField("Description", text: $description)
+                DatePicker("Due Date", selection: $dueDate, displayedComponents: .date)
             }
-        }
+            .navigationBarTitle("Add New Assignment", displayMode: .inline)
+            .navigationBarItems(trailing: Button("save") {
+                if course.count > 0, description.count > 0 {
+                let homeWork = AssignmentItem(course: course, description: description, dueDate:
+                                            dueDate)
+                    assignmentList.homeWork.append(homeWork)
+                    fooFighters()
+            }
+        })
     }
+}
 }
 
