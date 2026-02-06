@@ -18,6 +18,7 @@ struct ContentView: View {
                         VStack(alignment: .leading) {
                             Text(list.course).font(.headline)
                             Text(list.description)
+                                .preferredColorScheme(.dark)
                         }
                         Spacer()
                         Text(list.dueDate, style: .date)
@@ -53,4 +54,16 @@ struct AssignmentItem : Identifiable, Codable {
     var course = String()
     var description = String()
     var dueDate = Date()
+}
+struct customButton: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(minWidth: 100)
+            .font(.system(size: 20, weight: .semibold))
+            .padding(.vertical, 10)
+            .padding(.horizontal, 16)
+            .background(Color.white.opacity(configuration.isPressed ? 0.6 : 1.0))
+            .foregroundColor(.black)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
 }
